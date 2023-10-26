@@ -108,6 +108,7 @@
     {
       "src": "UserGuide.md",
       "headings": {
+        "layout-default-md-title-and-quot-user-guide-and-quot-pagenav-3": "layout: default.md\ntitle: &quot;User Guide&quot;\npageNav: 3",
         "modcraft-user-guide": "ModCraft User Guide",
         "table-of-contents": "Table of Contents",
         "quick-start": "Quick start",
