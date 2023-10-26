@@ -109,7 +109,7 @@
       "src": "UserGuide.md",
       "headings": {
         "layout-default-md-title-and-quot-user-guide-and-quot-pagenav-3": "layout: default.md\ntitle: &quot;User Guide&quot;\npageNav: 3",
-        "modcraft-user-guide": "Modcraft User Guide",
+        "modcraft-user-guide": "ModCraft User Guide",
         "table-of-contents": "Table of Contents",
         "quick-start": "Quick start",
         "features": "Features",
@@ -126,7 +126,8 @@
         "archiving-data-files-coming-in-v1-3": "Archiving data files [coming in v1.3]",
         "faq": "FAQ",
         "known-issues": "Known issues",
-        "command-summary": "Command summary"
+        "command-summary": "Command summary",
+        "glossary": "Glossary"
       },
       "headingKeywords": {}
     },
