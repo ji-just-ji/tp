@@ -40,7 +40,7 @@
       "src": "DeveloperGuide.md",
       "title": "Developer Guide",
       "headings": {
-        "ab-3-developer-guide": "AB-3 Developer Guide",
+        "modcraft-developer-guide": "MODCRAFT Developer Guide",
         "acknowledgements": "Acknowledgements",
         "setting-up-getting-started": "Setting up, getting started",
         "design": "Design",
@@ -109,7 +109,7 @@
       "src": "UserGuide.md",
       "headings": {
         "layout-default-md-title-and-quot-user-guide-and-quot-pagenav-3": "layout: default.md\ntitle: &quot;User Guide&quot;\npageNav: 3",
-        "modcraft-user-guide": "ModCraft User Guide",
+        "modcraft-user-guide": "Modcraft User Guide",
         "table-of-contents": "Table of Contents",
         "quick-start": "Quick start",
         "features": "Features",
