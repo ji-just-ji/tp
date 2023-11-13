@@ -35,7 +35,7 @@ This User Guide provides a guide of how to set up ModCraft and a description of 
    A GUI similar to the below should appear in a few seconds. Note how the app contains some sample data.<br> <br>
    ![Ui](images/Ui.png)
 
-5. Type the command in the command box and press Enter to execute it. e.g. typing **`help`** and pressing Enter will open the help window.<br>
+5. Type the command in the command box and press Enter to execute it. e.g. typing `help` and pressing Enter will open the help window.<br>
    Some example commands you can try:
 
     * `info CS1101S` : Shows Information about the module CS1101S
@@ -131,6 +131,7 @@ Examples:
 * `info CS2019`
 * `info CS1010*`
 
+<<<<<<< Updated upstream
 ### Calculating the total current CAP:
 Calculates the total current CAP of all modules stored in all years and semesters
 using the formula:  
@@ -142,12 +143,77 @@ Format: `calculateCAP`
 
 ### Calculating the total current Modular Credits (MCs)
 Calculates the total current Modular Credits (MCs) stored in all years and semesters.
+=======
+The images below show you what ModCraft should look like after executing the `info` command. 
+
+In the example below, the command `info CS3230` is executed. Information about the module `CS3230` is displayed.
+
+<div style="display:flex; justify-content:space-around; align-items:center;">
+  <img src="images/ImagesForUG/info-after.png" alt="After executing info command" style="height:400px; margin:20px;">
+</div>
+
+<br>
+
+### Calculating the total current CAP: `calculateCAP`
+
+You can calculate the total current Cumulative Average Point (CAP), or Grade Point Average (GPA) of all modules stored in all years and semesters, using this command.
+
+ModCraft will calculate your CAP according to the [NUS Modular System](https://www.nus.edu.sg/registrar/academic-information-policies/non-graduating/modular-system), and using the following formula:
+
+<p style="text-align: center;">
+$\Large\frac{\text{sum of all valid modules: (grade point of each valid module * Modular Credits of each valid module)}}{\text{total Modular Credits of valid modules}}$.
+</p>
+
+Displays you a `float` of `0.0` $\leq$ value $\leq$ `5.0`.
+
+Format: `calculateCAP`
+
+The images below show you what ModCraft should look like for executing the `calculateCAP` command.
+
+<div style="display:flex; justify-content:space-around; align-items:center;">
+  <img src="images/ImagesForUG/cap-after.png" alt="After executing calculateCAP command" style="height:400px; margin:20px;">
+</div>
+
+
+<div class="alert alert-primary"><md>:bulb: **Tip:**
+
+The result displayed by the `calculateCAP` command **does not include** the modules with grades marked as 
+`IP` (In Progress), `EXE` (Exempted), `W` (Withdrawn), `IC` (Incomplete), `S` (Satisfactory), `U` (Unsatisfactory), `CS` (Completed Satisfactory) and `CU` (Completed Unsatisfactory).
+
+</md></div>
+
+<br>
+
+### Calculating the total current Modular Credits (MCs): `CalculateMC`
+
+You can calculate the total current Modular Credits (MCs) stored in **all** years and semesters using this command. 
+ModCraft displays a float which is the sum of MCs of **all modules** in the **module plan**.
+>>>>>>> Stashed changes
 
 Format: `calculateMC`
 
 ### Exiting the program : `exit`
 
+<<<<<<< Updated upstream
 Exits the program.
+=======
+<div style="display:flex; justify-content:space-around; align-items:center;">
+  <img src="images/ImagesForUG/mc-after.png" alt="After executing calculateMC command" style="height:400px; margin:20px;">
+</div>
+
+<div class="alert alert-primary"><md>:bulb: **Tip:**
+
+The result displayed by the `calculateMC` command **includes** the modular credits of modules with grades marked 
+as `IP` (In progress), `W` (Withdrawn), `F`, `CU` and `U`.
+
+</md></div>
+
+<br>
+
+### Exiting the program: `exit`
+
+You can exit ModCraft using this command.
+>>>>>>> Stashed changes
 
 Format: `exit`
 
