@@ -60,6 +60,8 @@
         "add-module-command": "Add Module Command",
         "edit-module-command": "Edit Module Command",
         "delete-module-command": "Delete Module Command",
+        "calculate-cap": "Calculate Cap",
+        "calculate-mcs": "Calculate MCs",
         "proposed-undo-redo-feature": "[Proposed] Undo/redo feature",
         "future-enhancements": "Future enhancements",
         "documentation-logging-testing-configuration-dev-ops": "Documentation, logging, testing, configuration, dev-ops",
