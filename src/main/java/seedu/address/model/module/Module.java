@@ -2,8 +2,6 @@ package seedu.address.model.module;
 
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
-import java.util.Set;
-
 import seedu.address.commons.util.ToStringBuilder;
 
 /**
@@ -11,28 +9,31 @@ import seedu.address.commons.util.ToStringBuilder;
  * Guarantees: details are present and not null, field values are validated, immutable.
  */
 public class Module {
+
+    public static final String MESSAGE_INFO = "%1$s: %2$s \n"
+            + "%3$s MC \n"
+            + "%4$s \n";
+
     // Identity fields
     private final ModuleName moduleName;
     private final ModuleCode moduleCode;
+    private final Description description;
+    private final ModularCredit modularCredit;
 
     // Data fields
-    private final Description description;
-    private final Set<Lecturer> lecturers;
     private final Year yearTaken;
     private final Semester semesterTaken;
     private final Grade grade;
-    private final ModularCredit modularCredit;
 
     /**
      * Every field must be present and not null.
      */
     public Module(ModuleCode moduleCode, Year yearTaken, Semester semesterTaken, Grade grade, ModuleName name,
-                   Description description, Set<Lecturer> lecturers, ModularCredit modularCredit) {
-        requireAllNonNull(name, moduleCode, description, lecturers, yearTaken, semesterTaken, grade);
+                  Description description, ModularCredit modularCredit) {
+        requireAllNonNull(name, moduleCode, description, yearTaken, semesterTaken, grade);
         this.moduleName = name;
         this.moduleCode = moduleCode;
         this.description = description;
-        this.lecturers = lecturers;
         this.yearTaken = yearTaken;
         this.semesterTaken = semesterTaken;
         this.grade = grade;
@@ -40,19 +41,30 @@ public class Module {
     }
 
     /**
-     * Constructs a {@code Module} with only user input fields.
+     * Constructs a {@code Module} with only identity fields.
      */
-    public Module(ModuleCode moduleCode, Year year, Semester semester, Grade grade) {
-        requireAllNonNull(moduleCode, year, semester, grade);
+    public Module(ModuleCode moduleCode, ModuleName moduleName, Description description, ModularCredit modularCredit) {
+        requireAllNonNull(moduleCode, moduleName, description, modularCredit);
         this.moduleCode = moduleCode;
-        this.yearTaken = year;
-        this.semesterTaken = semester;
-        this.grade = grade;
-        // Temporary until we get back-end setup
-        this.moduleName = null;
-        this.description = null;
-        this.lecturers = null;
-        this.modularCredit = null;
+        this.moduleName = moduleName;
+        this.description = description;
+        this.modularCredit = modularCredit;
+
+        // User input fields
+        this.yearTaken = null;
+        this.semesterTaken = null;
+        this.grade = null;
+    }
+
+    /**
+     * Makes a new Module with the fields Year, Semester and Grade set.
+     *
+     * @return A new Module with the input fields.
+     */
+    public Module fillUserInputs(Year yearTaken, Semester semesterTaken, Grade grade) {
+        requireAllNonNull(yearTaken, semesterTaken, grade);
+
+        return new Module(moduleCode, yearTaken, semesterTaken, grade, moduleName, description, modularCredit);
     }
 
     public ModuleName getName() {
@@ -65,10 +77,6 @@ public class Module {
 
     public Description getDescription() {
         return description;
-    }
-
-    public Set<Lecturer> getLecturers() {
-        return lecturers;
     }
 
     public Year getYearTaken() {
@@ -87,8 +95,17 @@ public class Module {
         return modularCredit;
     }
 
+    public String toInfoString() {
+        return String.format(MESSAGE_INFO, moduleCode, moduleName, modularCredit, description);
+    }
+
+    public float getMcValue() {
+        return modularCredit.getValue();
+    }
+
     /**
      * Checks if two modules are the same module.
+     *
      * @param otherModule the other module to check.
      * @return true if the modules are the same, false otherwise.
      */
@@ -112,10 +129,23 @@ public class Module {
         }
 
         Module otherModule = (Module) other;
+
         return this.moduleCode.equals(otherModule.moduleCode)
-                && this.yearTaken.equals(otherModule.yearTaken)
-                && this.semesterTaken.equals(otherModule.semesterTaken)
-                && this.grade.equals(otherModule.grade);
+                && this.moduleName.equals(otherModule.moduleName)
+                && this.description.equals(otherModule.description)
+                && this.modularCredit.equals(otherModule.modularCredit)
+                && isEditableFieldEquals(this.yearTaken, otherModule.yearTaken)
+                && isEditableFieldEquals(this.semesterTaken, otherModule.semesterTaken)
+                && isEditableFieldEquals(this.grade, otherModule.grade);
+    }
+
+    private boolean isEditableFieldEquals(Object thisObj, Object otherObj) {
+        if (thisObj == null && otherObj == null) {
+            return true;
+        } else if (thisObj == null || otherObj == null) {
+            return false;
+        }
+        return thisObj.equals(otherObj);
     }
 
     @Override

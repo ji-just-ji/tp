@@ -11,7 +11,6 @@ import java.util.stream.Stream;
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.module.Grade;
-import seedu.address.model.module.Module;
 import seedu.address.model.module.ModuleCode;
 import seedu.address.model.module.Semester;
 import seedu.address.model.module.Year;
@@ -22,8 +21,17 @@ import seedu.address.model.module.Year;
 public class AddCommandParser implements Parser<AddCommand> {
 
     /**
+     * Returns true if none of the prefixes contains empty {@code Optional} values in the given
+     * {@code ArgumentMultimap}.
+     */
+    private static boolean arePrefixesPresent(ArgumentMultimap argumentMultimap, Prefix... prefixes) {
+        return Stream.of(prefixes).allMatch(prefix -> argumentMultimap.getValue(prefix).isPresent());
+    }
+
+    /**
      * Parses the given {@code String} of arguments in the context of the AddCommand
      * and returns an AddCommand object for execution.
+     *
      * @throws ParseException if the user input does not conform the expected format
      */
     public AddCommand parse(String args) throws ParseException {
@@ -31,49 +39,19 @@ public class AddCommandParser implements Parser<AddCommand> {
         ArgumentMultimap argMultimap =
                 ArgumentTokenizer.tokenize(args, PREFIX_YEAR, PREFIX_SEMESTER, PREFIX_GRADE);
 
+        if (!arePrefixesPresent(argMultimap, PREFIX_YEAR, PREFIX_SEMESTER, PREFIX_GRADE)) {
+            throw new ParseException(
+                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddCommand.MESSAGE_USAGE));
+        }
+
         argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_YEAR, PREFIX_SEMESTER, PREFIX_GRADE);
 
+        ModuleCode moduleCode = ParserUtil.parseModuleCode(argMultimap.getPreamble());
+        Year year = ParserUtil.parseYear(argMultimap.getValue(PREFIX_YEAR).get());
+        Semester semester = ParserUtil.parseSemester(argMultimap.getValue(PREFIX_SEMESTER).get());
+        Grade grade = ParserUtil.parseGrade(argMultimap.getValue(PREFIX_GRADE).get());
 
-
-        ModuleCode moduleCode;
-        Year year = null;
-        Semester semester = null;
-        Grade grade = null;
-        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_YEAR, PREFIX_SEMESTER, PREFIX_GRADE);
-        if (!argMultimap.getPreamble().isEmpty()) {
-            moduleCode = ParserUtil.parseModuleCode(argMultimap.getPreamble());
-        } else {
-            throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddCommand.MESSAGE_USAGE),
-                    new ParseException(MESSAGE_INVALID_COMMAND_FORMAT));
-        }
-
-        if (argMultimap.getValue(PREFIX_YEAR).isPresent()) {
-            year = ParserUtil.parseYear(argMultimap.getValue(PREFIX_YEAR).get());
-        }
-        if (argMultimap.getValue(PREFIX_SEMESTER).isPresent()) {
-            semester = ParserUtil.parseSemester(argMultimap.getValue(PREFIX_SEMESTER).get());
-        }
-        if (argMultimap.getValue(PREFIX_GRADE).isPresent()) {
-            grade = ParserUtil.parseGrade(argMultimap.getValue(PREFIX_GRADE).get());
-        }
-
-        if (year == null || semester == null || grade == null) {
-            throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddCommand.MESSAGE_USAGE),
-                    new ParseException(MESSAGE_INVALID_COMMAND_FORMAT));
-        }
-        Module module = new Module(moduleCode, year, semester, grade);
-
-        return new AddCommand(module);
-    }
-
-    /**
-     * Returns true if none of the prefixes contains empty {@code Optional} values in the given
-     * {@code ArgumentMultimap}.
-     */
-    private static boolean arePrefixesPresent(ArgumentMultimap argumentMultimap, Prefix... prefixes) {
-        return Stream.of(prefixes).allMatch(prefix -> argumentMultimap.getValue(prefix).isPresent());
+        return new AddCommand(moduleCode, year, semester, grade);
     }
 
 }

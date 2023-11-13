@@ -17,35 +17,27 @@ import seedu.address.model.module.Year;
  */
 public class ModulePlanSemester implements Comparable<ModulePlanSemester> {
 
+
     private Year year;
     private Semester semester;
 
-    private final UniqueModuleList modules;
-
-    /*
-     * The 'unusual' code block below is a non-static initialization block, sometimes used to avoid duplication
-     * between constructors. See https://docs.oracle.com/javase/tutorial/java/javaOO/initial.html
-     *
-     * Note that non-static init blocks are not recommended to use. There are other ways to avoid duplication
-     *   among constructors.
-     */
-    {
-        modules = new UniqueModuleList();
-    }
+    private final UniqueModuleList modules = new UniqueModuleList();
 
     /**
      * Wraps all data at the Module Plan semester level.
      */
     public ModulePlanSemester(Year year, Semester semester) {
+        requireNonNull(year);
+        requireNonNull(semester);
         this.year = year;
         this.semester = semester;
     }
 
     /**
      * Replaces the contents of the module list with {@code modules}.
-     *
      */
     public void setModules(List<Module> modules) {
+        requireNonNull(modules);
         this.modules.setModules(modules);
     }
 
@@ -63,6 +55,7 @@ public class ModulePlanSemester implements Comparable<ModulePlanSemester> {
      * Adds a module to the module plan.
      */
     public void addModule(Module m) {
+        requireNonNull(m);
         modules.add(m);
     }
 
@@ -70,17 +63,10 @@ public class ModulePlanSemester implements Comparable<ModulePlanSemester> {
      * Removes {@code key} from this {@code ModulePlan}.
      */
     public void removeModule(Module key) {
+        requireNonNull(key);
         modules.remove(key);
     }
 
-    /**
-     * Replaces the given module {@code target} in the list with {@code editedModule}.
-     */
-    public void setModule(Module target, Module editedModule) {
-        requireNonNull(editedModule);
-
-        modules.setModules(target, editedModule);
-    }
 
     /**
      * Finds and returns a module using its module code from the internal list of modules.
@@ -89,7 +75,7 @@ public class ModulePlanSemester implements Comparable<ModulePlanSemester> {
      * @return The module with the specified module code, or null if not found.
      * @throws NullPointerException If the provided module code is null.
      */
-    public Module findUsingCode(ModuleCode code) {
+    public Module getModule(ModuleCode code) {
         requireNonNull(code);
         return modules.find(code);
     }
@@ -99,7 +85,7 @@ public class ModulePlanSemester implements Comparable<ModulePlanSemester> {
      *
      * @return The total modular credits of all modules in the collection.
      */
-    public int totalModularCredits() {
+    public float totalModularCredits() {
         return modules.modularCredits();
     }
 
@@ -127,14 +113,35 @@ public class ModulePlanSemester implements Comparable<ModulePlanSemester> {
      * @param m The module code to check for.
      * @return Whether the module is among the modules in this semester or not.
      */
-    public boolean checkModuleInSemester(Module m) {
+    public boolean checkModuleBelongToSemester(Module m) {
+        requireNonNull(m);
+
         boolean equalYear = this.year.equals(m.getYearTaken());
         boolean equalSemester = this.semester.equals(m.getSemesterTaken());
 
-        if (equalYear && equalSemester) {
+        //For advance placement
+        if (equalYear && this.year.equals(Year.YEAR_0)) {
             return true;
         }
-        return false;
+
+        return equalYear && equalSemester;
+    }
+
+    /**
+     * Checks if the given semester is the same semesters.
+     */
+    public boolean checkIfSameSemester(ModulePlanSemester otherModulePlanSemester) {
+        requireNonNull(otherModulePlanSemester);
+
+        boolean yearEquals = this.year.equals(otherModulePlanSemester.year);
+        boolean semesterEquals = this.semester.equals(otherModulePlanSemester.semester);
+
+        //For advance placement
+        if (yearEquals && this.year.equals(Year.YEAR_0)) {
+            return true;
+        }
+
+        return yearEquals && semesterEquals;
     }
 
     /**
@@ -145,13 +152,30 @@ public class ModulePlanSemester implements Comparable<ModulePlanSemester> {
     public boolean isEmpty() {
         return modules.isEmpty();
     }
+
+    /**
+     * Returns the unmodifiable module list.
+     */
     public ObservableList<Module> getModuleList() {
         return modules.asUnmodifiableObservableList();
     }
 
+    /**
+     * Makes a new copy of ModulePlanSemester.
+     */
+    public ModulePlanSemester copy() {
+        Year y = new Year(year.toString());
+        Semester s = new Semester(semester.getSemesterString());
+
+        return new ModulePlanSemester(y, s);
+    }
+
     @Override
     public String toString() {
-        return "Year " + year.toString() + " " + semester.toString();
+        if (year.equals(Year.YEAR_0)) {
+            return "Adv Placement";
+        }
+        return "Year " + year + " " + semester.toString();
     }
 
     @Override
@@ -168,8 +192,10 @@ public class ModulePlanSemester implements Comparable<ModulePlanSemester> {
         ModulePlanSemester otherModulePlanSemester = (ModulePlanSemester) other;
         boolean yearEquals = this.year.equals(otherModulePlanSemester.year);
         boolean semesterEquals = this.semester.equals(otherModulePlanSemester.semester);
+        boolean modulesEquals = this.modules.equals(otherModulePlanSemester.modules);
 
-        return yearEquals && semesterEquals;
+
+        return yearEquals && semesterEquals && modulesEquals;
     }
 
     @Override

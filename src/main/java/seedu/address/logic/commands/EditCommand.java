@@ -18,6 +18,7 @@ import seedu.address.model.module.Module;
 import seedu.address.model.module.ModuleCode;
 import seedu.address.model.module.Semester;
 import seedu.address.model.module.Year;
+import seedu.address.model.module.exceptions.ModuleNotFoundException;
 
 /**
  * Edits the details of an existing module in the module plan.
@@ -43,11 +44,12 @@ public class EditCommand extends Command {
     public static final String MESSAGE_EDIT_MODULE_SUCCESS = "Edited Module: %1$s";
     public static final String MESSAGE_NOT_EDITED = "At least one field to edit must be provided.";
     public static final String MESSAGE_MODULE_CODE_CHANGE = "Changing module code is not allowed.";
+
     private final ModuleCode moduleCode;
     private final EditModuleDescriptor editModuleDescriptor;
 
     /**
-     * @param moduleCode of the module to edit
+     * @param moduleCode           of the module to edit
      * @param editModuleDescriptor details to edit the module with
      */
     public EditCommand(ModuleCode moduleCode, EditModuleDescriptor editModuleDescriptor) {
@@ -58,20 +60,6 @@ public class EditCommand extends Command {
         this.editModuleDescriptor = new EditModuleDescriptor(editModuleDescriptor);
     }
 
-    @Override
-    public CommandResult execute(Model model) throws CommandException {
-        requireNonNull(model);
-        Module moduleToEdit = model.findModuleUsingCode(moduleCode);
-        Module editedModule = createEditedModule(moduleToEdit, editModuleDescriptor);
-
-        if (!moduleToEdit.isSameModule(editedModule)) {
-            throw new CommandException(MESSAGE_MODULE_CODE_CHANGE);
-        }
-
-        model.setModule(moduleToEdit, editedModule);
-        return new CommandResult(String.format(MESSAGE_EDIT_MODULE_SUCCESS, Messages.format(editedModule)));
-    }
-
     /**
      * Creates and returns a {@code Module} with the details of {@code moduleToEdit}
      * edited with {@code editModuleDescriptor}.
@@ -79,12 +67,43 @@ public class EditCommand extends Command {
     private static Module createEditedModule(Module moduleToEdit, EditModuleDescriptor editModuleDescriptor) {
         assert moduleToEdit != null;
 
-        ModuleCode moduleCode = moduleToEdit.getModuleCode();
         Year updatedYear = editModuleDescriptor.getYear().orElse(moduleToEdit.getYearTaken());
         Semester updatedSemester = editModuleDescriptor.getSemester().orElse(moduleToEdit.getSemesterTaken());
         Grade updatedGrade = editModuleDescriptor.getGrade().orElse(moduleToEdit.getGrade());
 
-        return new Module(moduleCode, updatedYear, updatedSemester, updatedGrade);
+        return moduleToEdit.fillUserInputs(updatedYear, updatedSemester, updatedGrade);
+    }
+
+    @Override
+    public CommandResult execute(Model model) throws CommandException {
+        requireNonNull(model);
+
+        // Database check
+        if (!model.checkDbValidModuleCode(moduleCode)) {
+            throw new CommandException(String.format(Messages.MESSAGE_INVALID_MODULE_CODE, moduleCode));
+        }
+
+        // Retrieve module from module plan
+        Module moduleToEdit;
+        try {
+            moduleToEdit = model.getModule(moduleCode);
+        } catch (ModuleNotFoundException mnfe) {
+            throw new CommandException(
+                    String.format(Messages.MESSAGE_MODULE_NOT_FOUND, moduleCode, COMMAND_WORD));
+        }
+
+        // Edit module
+        Module editedModule = createEditedModule(moduleToEdit, editModuleDescriptor);
+
+        // Check for changes
+        if (!moduleToEdit.isSameModule(editedModule)) {
+            throw new CommandException(MESSAGE_MODULE_CODE_CHANGE);
+        }
+
+        // Update module plan and return success message
+        model.setModule(moduleToEdit, editedModule);
+        return new CommandResult(
+                String.format(MESSAGE_EDIT_MODULE_SUCCESS, Messages.format(editedModule)));
     }
 
     @Override
@@ -120,7 +139,8 @@ public class EditCommand extends Command {
         private Semester semester;
         private Grade grade;
 
-        public EditModuleDescriptor() {}
+        public EditModuleDescriptor() {
+        }
 
         /**
          * Copy constructor.
@@ -138,28 +158,28 @@ public class EditCommand extends Command {
             return CollectionUtil.isAnyNonNull(year, semester, grade);
         }
 
-        public void setYear(Year year) {
-            this.year = year;
-        }
-
         public Optional<Year> getYear() {
             return Optional.ofNullable(year);
         }
 
-        public void setSemester(Semester semester) {
-            this.semester = semester;
+        public void setYear(Year year) {
+            this.year = year;
         }
 
         public Optional<Semester> getSemester() {
             return Optional.ofNullable(semester);
         }
 
-        public void setGrade(Grade grade) {
-            this.grade = grade;
+        public void setSemester(Semester semester) {
+            this.semester = semester;
         }
 
         public Optional<Grade> getGrade() {
             return Optional.ofNullable(grade);
+        }
+
+        public void setGrade(Grade grade) {
+            this.grade = grade;
         }
 
         @Override

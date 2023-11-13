@@ -11,11 +11,6 @@ public class ModuleName {
     public static final String MESSAGE_CONSTRAINTS =
             "Names should only contain alphanumeric characters and spaces, and it should not start with space.";
 
-    /*
-     * The first character of the name must not be a whitespace,
-     * otherwise " " (a blank string) becomes a valid input.
-     */
-    public static final String VALIDATION_REGEX = "[\\p{Alnum}][\\p{Alnum} ]*";
 
     public final String moduleName;
 
@@ -31,10 +26,9 @@ public class ModuleName {
     }
 
     /**
-     * Returns true if a given string is a valid name.
+     * Returns true for any given string.
      */
     public static boolean isValidName(String test) {
-        // return test.matches(VALIDATION_REGEX);
         return true;
     }
 
@@ -50,12 +44,12 @@ public class ModuleName {
         }
 
         // instanceof handles nulls
-        if (!(other instanceof seedu.address.model.person.Name)) {
+        if (!(other instanceof ModuleName)) {
             return false;
         }
 
-        seedu.address.model.person.Name otherName = (seedu.address.model.person.Name) other;
-        return moduleName.equals(otherName.fullName);
+        ModuleName otherName = (ModuleName) other;
+        return moduleName.equals(otherName.moduleName);
     }
 
     @Override

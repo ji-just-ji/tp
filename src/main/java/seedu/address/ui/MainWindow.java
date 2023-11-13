@@ -27,14 +27,12 @@ public class MainWindow extends UiPart<Stage> {
 
     private final Logger logger = LogsCenter.getLogger(getClass());
 
-    private Stage primaryStage;
-    private Logic logic;
-
+    private final Stage primaryStage;
+    private final Logic logic;
+    private final HelpWindow helpWindow;
     // Independent Ui parts residing in this Ui container
-    private PersonListPanel personListPanel;
+    private ModulePlanPanel modulePlanPanel;
     private ResultDisplay resultDisplay;
-    private HelpWindow helpWindow;
-
     @FXML
     private StackPane commandBoxPlaceholder;
 
@@ -79,6 +77,7 @@ public class MainWindow extends UiPart<Stage> {
 
     /**
      * Sets the accelerator of a MenuItem.
+     *
      * @param keyCombination the KeyCombination value of the accelerator
      */
     private void setAccelerator(MenuItem menuItem, KeyCombination keyCombination) {
@@ -114,7 +113,7 @@ public class MainWindow extends UiPart<Stage> {
         resultDisplay = new ResultDisplay();
         resultDisplayPlaceholder.getChildren().add(resultDisplay.getRoot());
 
-        StatusBarFooter statusBarFooter = new StatusBarFooter(logic.getAddressBookFilePath());
+        StatusBarFooter statusBarFooter = new StatusBarFooter(logic.getModulePlanFilePath());
         statusbarPlaceholder.getChildren().add(statusBarFooter.getRoot());
 
         CommandBox commandBox = new CommandBox(this::executeCommand);
@@ -164,9 +163,6 @@ public class MainWindow extends UiPart<Stage> {
         primaryStage.hide();
     }
 
-    public PersonListPanel getPersonListPanel() {
-        return personListPanel;
-    }
 
     /**
      * Executes the command and returns the result.
