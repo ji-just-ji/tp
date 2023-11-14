@@ -38,6 +38,7 @@ Given below are my contributions to the project.
 
 * **Community**:
   * PRs reviewed (with non-trivial review comments): 4
+    * #79, #129, #143, #168
   * Contributed to forum discussions (examples: to be added soon)
   * Reported bugs and suggestions for other teams in the class (examples: to be added soon)
   * Some parts of some feature I added was adopted by several other class mates (to be added soon)
